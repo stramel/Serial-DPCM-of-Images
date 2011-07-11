@@ -7,26 +7,31 @@
 using std::ifstream;
 using std::ofstream;
 using std::ios;
+using namespace std;
 
 
-void ReadInputFile (char *buffer, int size, char *input) {
+void ReadInputFile (int *buffer, unsigned int &length, char *input) {
   ifstream in (input, ios::binary);
-  in.read(input, size);
+  in.seekg(0, ios::end);
+  length = in.tellg();
+  in.seekg(0, ios::beg);
+  in.read((char *)buffer, length);
   in.close();
   return;
 }
 
-void WriteOutputFile (char *buffer, char *output, int size) {
+
+void WriteOutputFile (int *buffer, char *output, unsigned int size) {
   ofstream out (output, ios::binary);
-  out.write(buffer, size);
+  out.write((char *)buffer, size);
   out.close();
   return;
 }
 
-void Predictor (char *input_buffer, char *output_buffer, int size) {
+void Predictor (int *input_buffer, int *output_buffer, unsigned int size) {
   float a = 1.0/3.0;
-  for ( int i = 0; i < size; i++) {
-    for (int j = 0; j < size; j++) {
+  for ( unsigned int i = 0; i < size; i++) {
+    for (unsigned int j = 0; j < size; j++) {
       if ( i - 1 < 0 || j - 1 < 0) {
 	output_buffer[i*size+j] = ceil(a*input_buffer[(i-1)*size+j] + a*input_buffer[(i-1)*size+(j-1)] + a*input_buffer[i*size+(j-1)]);
       } else { 
@@ -37,17 +42,17 @@ void Predictor (char *input_buffer, char *output_buffer, int size) {
   return;
 }
  
-void ComputeResidual  (char *input, char *output, int size) {
-  int size_of_file = size * size;
-  char *input_buffer = new char [size_of_file];
-  char *output_buffer = new char [size_of_file];
-  ReadInputFile (input_buffer, size_of_file, input);
+void ComputeResidual  (char *input, char *output, unsigned int size) {
+  int *input_buffer = new int [size*size];
+  int *output_buffer = new int [size*size];
+  unsigned int length = 0;
+  ReadInputFile (input_buffer, length, input);
   Predictor (input_buffer, output_buffer, size);
-  for (int i = 0; i < size; i++) {
-    for (int j = 0; j < size; j++) {
+  for (unsigned int i = 0; i < size; i++) {
+    for (unsigned int j = 0; j < size; j++) {
       output_buffer[i*size+j] -= input_buffer[i*size+j];
     }
   }
-  WriteOutputFile (output_buffer, output, size_of_file);
+  WriteOutputFile (output_buffer, output, length);
   return;
 }

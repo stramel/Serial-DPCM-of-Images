@@ -1,1 +1,7 @@
-more to come
+********************************************************************************
+*                   Serial Lossless DPCM with Huffman coding                   *
+********************************************************************************
+* Differential Pulse Code Modulation (DPCM) with Huffman coding provies a      *
+* higher compression with less computation than that of other Lossless JPEG    *
+* methods.                                                                     *
+********************************************************************************
