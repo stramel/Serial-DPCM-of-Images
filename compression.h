@@ -1,4 +1,6 @@
-void ReadInputFile (int *buffer, unsigned int &length, char *input);
-void WriteOutputFile (int *buffer, char *output, unsigned int size);
-void Predictor (int *input_buffer, int *output_buffer, unsigned int size);
-void ComputeResidual  (char *input, char *output, unsigned int size);
+void ReadInputFile (int *buffer, int size, char *input);
+void Predictor (char *inp_buffer, char *out_buffer, int size);
+void ComputeResidual  (char *input, int size, int *out_buffer);
+void ProbabilityOccurence (int size, float probability[], int *buffer,
+			   float &temp);
+void ComputeEntropy (int *buffer, int size);
