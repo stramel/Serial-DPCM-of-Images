@@ -8,4 +8,4 @@ MYCFLAGS= -W -Wall -Wcast-align -Wtrigraphs \
 all: dpcm.out
 
 dpcm.out: compression.cc driver.cc compression.h
-	g++ -o dpcm.out compression.cc driver.cc
+	g++ ${MYCFLAGS} -o dpcm.out compression.cc driver.cc
