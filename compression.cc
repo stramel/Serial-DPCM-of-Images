@@ -1,82 +1,73 @@
-#include <cstdlib>
 #include <cmath>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include "compression.h"
-#include <errno.h>
 
 using std::ifstream;
 using std::ofstream;
 using std::ios;
 using namespace std;
 
-void ReadInputFile (int *buffer, int size, char *input) {  //PROBLEM
+void ReadInputFile(int *image, int size, char *input) {
   ifstream in (input);
-  char temp_buffer[5];
-  for (int i = 0; i < size*size; i++) {
+  char temp_buffer[4];
+  for (int i = 0; i < size; i++) {
+    for (int j = 0; j < size; j++) {
       in.getline(temp_buffer, 4, '\n');
-      buffer[i] = atoi(temp_buffer);
+      image[i*size+j] = atoi(temp_buffer);
+    }
   }
-
   return;
 }
 
-void Predictor (int *in_buffer, int *out_buffer, int size) {
+void Predictor(int *image, int *residual, int size) {
   float a = 1.0/3.0;
-  for (int i = 0; i < size; i++) {
-    for (int j = 0; j < size; j++) {
-      if ( i - 1 > 0 && j - 1 > 0) {
-       	out_buffer[i*size+j] = (int)(a*in_buffer[(i-1)*size+j] + 
-				    a*in_buffer[(i-1)*size+(j-1)] +
-				     a*in_buffer[i*size+(j-1)]);
-      } else { 
-	out_buffer[i*size+j] = in_buffer[i*size+j];
-      }
+  for (int i = 1; i < size; i++) {
+    for (int j = 1; j < size; j++) {
+      residual[i*size+j] = ceil(a*image[(i-1)*size+j] + 
+				a*image[(i-1)*size+(j-1)] +
+				a*image[i*size+(j-1)]- .5);
     }
   }
   return;
 }
  
-void ComputeResidual  (char *input, int size, int *out_buffer) {
-  int *in_buffer = new int [size*size];
-  ReadInputFile (in_buffer, size, input);
-  Predictor (in_buffer, out_buffer, size);
+void ComputeResidual(char *input, int size, int *residual) {
+  int *image = new int [size*size];
+  ReadInputFile(image, size, input);
+  Predictor(image, residual, size);
   for (int i = 0; i < size; i++) {
     for (int j = 0; j < size; j++) {
-      out_buffer[i*size+j] = in_buffer[i*size+j] - out_buffer[i*size+j];
+      residual[i*size+j] = image[i*size+j] - residual[i*size+j];
     }
   }
-  delete [] in_buffer;
+  delete [] image;
   return;
 }
 
-
-void ProbabilityOccurence (int size, float probability[], int *buffer,
-			   float &temp) {
+void ProbabilityOccurence(int size, float probability[], int *residual) {
   for (int i = 0; i < size; i++) {
     for (int j = 0; j < size; j++) {
-      int temp2 = buffer[i*size+j];
-      probability[temp2+255]++;
+      probability[residual[i*size+j]++;
     }    
   }
-float total = 0.0;
-  for (int i = 0; i < 512; i++) {
+  for (int i = 0; i < 511; i++) {
     probability[i] /= size*size; 
-    if (probability[i] > 0 && probability[i] < 1) {
-      temp += probability[i] * log2(probability[i]);
+  }
+  return;
+}
+
+void ComputeEntropy(int *residual, int size) {
+  float probability[511]= {0.0};
+  float temp = 0.0;
+  ProbabilityOccurence(size, probability, residual);
+  for (int i = 0; i < 511; i++) {
+    if (probability[i] != 0) {
+      temp += probability[i] * log2(probability[i];)
     }
   }
   temp *= -1;
-  if (errno == ERANGE) {
-    cout << "ERROR: errno" << endl;
-  }
-  return;
-}
-
-void ComputeEntropy (int *buffer, int size) {
-  float probability[512]= {0.0};
-  float temp = 0.0;
-  ProbabilityOccurence (size, probability, buffer, temp);
   printf("Entropy: %f\n", temp);
   return;
 }

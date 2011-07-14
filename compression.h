@@ -1,6 +1,5 @@
-void ReadInputFile (int *buffer, int size, char *input);
-void Predictor (char *inp_buffer, char *out_buffer, int size);
-void ComputeResidual  (char *input, int size, int *out_buffer);
-void ProbabilityOccurence (int size, float probability[], int *buffer,
-			   float &temp);
-void ComputeEntropy (int *buffer, int size);
+void ReadInputFile(int *image, int size, char *input);
+void Predictor(char *image, char *residual, int size);
+void ComputeResidual (char *input, int size, int *residual);
+void ProbabilityOccurence(int size, float probability[], int *residual);
+void ComputeEntropy(int *residual, int size);
