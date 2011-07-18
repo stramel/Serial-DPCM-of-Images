@@ -49,7 +49,7 @@ void ComputeResidual(char *input, int size, int *residual) {
 void ProbabilityOccurence(int size, float probability[], int *residual) {
   for (int i = 0; i < size; i++) {
     for (int j = 0; j < size; j++) {
-      probability[residual[i*size+j]++;
+      probability[residual[i*size+j]+255]++;
     }    
   }
   for (int i = 0; i < 511; i++) {
@@ -64,11 +64,11 @@ void ComputeEntropy(int *residual, int size) {
   ProbabilityOccurence(size, probability, residual);
   for (int i = 0; i < 511; i++) {
     if (probability[i] != 0) {
-      temp += probability[i] * log2(probability[i];)
+      temp += probability[i] * log2(probability[i]);
     }
   }
   temp *= -1;
-  printf("Entropy: %f\n", temp);
+  printf("Entropy: %.3f\n", temp);
   return;
 }
 
