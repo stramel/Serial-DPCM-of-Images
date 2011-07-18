@@ -3,5 +3,6 @@
 ********************************************************************************
 * Differential Pulse Code Modulation (DPCM) with Huffman coding provies a      *
 * higher compression with less computation than that of other Lossless JPEG    *
-* methods.                                                                     *
+* methods. Huffman coding has not been added yet, instead Entropy calculations *
+* have been added to get an approximate value for the compression ratio.       *
 ********************************************************************************
